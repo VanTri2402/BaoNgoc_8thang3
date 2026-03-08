@@ -179,7 +179,7 @@
         transform: scale(1.4);
       }
 
-      /* SCENES */
+      /* SCENES — JS controls opacity + visibility via inline styles */
       .sc {
         position: fixed;
         inset: 0;
@@ -190,17 +190,56 @@
         opacity: 0;
         pointer-events: none;
         z-index: 10;
-        transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+        visibility: hidden;
+        /* NO transition here — JS handles it with inline styles */
       }
       .sc.on {
-        opacity: 1;
         pointer-events: all;
         z-index: 20;
+        visibility: visible;
+        /* opacity controlled by JS inline style */
       }
       .sc.off {
-        opacity: 0;
         pointer-events: none;
         z-index: 15;
+      }
+
+      /* ══ FIX: Force animated children visible khi scene .on ══
+         Vấn đề: animation:rise dùng opacity:0 ban đầu, chỉ chạy 1 lần.
+         Khi scene được show lại, animation không replay.
+         Fix: override opacity cho children khi parent .sc.on */
+      .sc.on .eyb,
+      .sc.on .tit,
+      .sc.on .fhw,
+      .sc.on .subl {
+        /* animation vẫn chạy lần đầu, lần sau sẽ visible nhờ rule này */
+        animation-play-state: running;
+      }
+
+      /* Khi scene không active, reset children về hidden */
+      .sc:not(.on) .eyb,
+      .sc:not(.on) .tit,
+      .sc:not(.on) .fhw,
+      .sc:not(.on) .subl {
+        animation: none !important;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      /* Khi scene active, trigger animation */
+      .sc.on .eyb {
+        animation: rise 0.8s 0.2s ease forwards !important;
+      }
+      .sc.on .tit {
+        animation:
+          shimmer 5s ease infinite,
+          rise 0.9s 0.5s ease both !important;
+      }
+      .sc.on .fhw {
+        animation: rise 0.9s 0.9s ease both !important;
+      }
+      .sc.on .subl {
+        animation: rise 0.8s 1.4s ease forwards !important;
       }
 
       /* KEYFRAMES */
@@ -1083,7 +1122,11 @@
     </nav>
 
     <!-- ═══ ACT 1 — BIG BANG LOADER ═══ -->
-    <section id="a1" class="sc on" style="padding: 0; overflow: hidden">
+    <section
+      id="a1"
+      class="sc on"
+      style="visibility: visible; opacity: 1; padding: 0; overflow: hidden"
+    >
       <canvas
         id="a1cv"
         style="
@@ -1245,7 +1288,7 @@
             ><i class="ph ph-flower-lotus" style="font-size: 2.1rem"></i
           ></span>
           <span class="ldate">Ngày 08 tháng 03 — Anh gửi em</span>
-          <span class="lsalute">Bảo Ngọc yêu dấu,</span>
+          <span class="lsalute">Trần Kim Bảo Ngọc yêu dấu,</span>
           <div id="twout"><span class="twc" id="twcur"></span></div>
           <div class="lsig" id="lsig">
             <i
@@ -1339,7 +1382,6 @@
       const HER_NAME = "Bảo Ngọc";
       const SENDER = "Văn Trí";
       const YT_ID = "_kN0xMo0iQU";
-
       /* ══════════════════════════════════════════════
    PHOTOS (base64 embedded)
 ══════════════════════════════════════════════ */
@@ -1401,17 +1443,40 @@
       /* ══════════════════════════════════════════════
    LETTER TEXT ★ EDIT
 ══════════════════════════════════════════════ */
-      const LETTER = `Hôm nay là ngày 8 tháng 3, một ngày thật đặc biệt — không chỉ vì đây là Ngày Quốc tế Phụ nữ, mà vì đây là ngày anh muốn nói với em rằng: em chính là điều tuyệt vời nhất đã đến trong cuộc đời anh.
+      const LETTER = `Em yêu dấu ưi !
 
-Anh nhớ lần đầu nhìn thấy nụ cười của em, ánh mắt em long lanh như những vì sao trên bầu trời đêm nay. Từ đó, trái tim anh đã thuộc về em mà không cần hỏi xin phép.
+Nhân ngày 8/3 , ngày mà mọi phụ nữ trên thế giới đều xứng đáng có được hạnh phúc, và em cũng vậy người phụ nữ người mà anh yêu 
+Trần Kim Bảo Ngọc,. Anh cũng có một số đôi lời mong rằng đủ để sưởi ấm cũng như xoa dịu trái tim rực cháy của em
 
-Em biết không, mỗi buổi sáng thức dậy, điều đầu tiên anh nghĩ đến là em. Mỗi khoảnh khắc bình yên, mỗi nụ cười nhỏ trong ngày, anh đều muốn chia sẻ cùng em.
+Hmm , để mà nói yêu em anh không biết nói sao cho hết nữa á , anh yêu em không vì em giỏi không vì em đẹp dù tất cả thứ đó em đều dư,... !!! Nhưng anh chỉ hiểu rằng anh yêu em vì ngay từ những ngày đầu tiên nói chuyện em đã tin tưởng anh 1 cách vô bờ , yêu anh cố chấp vì anh , và sẵn sàng ở lại nói chuyện and long text với anh. Thật thì những điều đó làm anh cảm động lắm,... Dù lúc đó tui chưa muốn thừa nhận tui yêu em đâuuuu.!
 
-Cảm ơn em vì đã luôn ở đây, vì những lúc em kiên nhẫn khi anh vụng về, vì những lần em cười xóa đi mọi muộn phiền. Bên cạnh em, anh cảm thấy cả thế giới đều trọn vẹn.
+Anh thương em lắm , vì em tin tưởng anh rất nhiều , em biết hong lần đầu có người khiến anh dại gái đến độ dầm mưa 2 tiếng chỉ để gặp 30p dù anh không hiểu lý do là gì hết??? Lần đầu có người tin tưởng anh khi mà quen chưa được bao lâu , cụ thể chính xác là 1 ngày đã dám public anh ra với gia đình ba mẹ. Ôi lần đầu nên khá là sốc với độ dại trai của baby , anh cứ nghĩ anh dại gái lắm rồi hóa ra còn có người vì anh mà dại dữ nữa cơ,.. Em không biết đâu ngay từ khoảnh khắc anh xin mẹ em rằng anh tìm hiểu em , tim anh như đứng lại chỉ mong 1 lời đồng ý từ mẹ và ba để anh có thể chăm sóc em trong chặng đường tương lai.
 
-Chúc em một ngày 8/3 thật hạnh phúc — trái tim anh sẽ mãi là ngôi nhà bé nhỏ dành riêng cho Bảo Ngọc của anh.
+Thật thì anh còn nhiều điều để nói lắm á nhưng anh nghĩ mình chỉ nên nói gói gọn nhỏ nhẹ rồi từ từ tương lai mình sẽ còn nhiều điều và dịp để nói với nhau nữa nha.
 
-Yêu em rất nhiều.`;
+Anh quen em anh rất là bất ngờ vì những điều em dám làm cho anh từ những món đồ handmade , từ những tấm lòng tinh tế lựa chọn quà cho anh , thật rằng nó tinh tế đến cái mức anh đeo kính em tặng vào ai ai cũng sẽ nhìn vào và nói rằng sao nhìn anh đẹp trai lạ quá vậy !!! Rồi tới con hổ móc khóa vovinam , xong tới bó hoa giấy em làm , rồi tới lắc tay. Anh thì rất trân quý anh để ý trân trọng từng thứ luôn vì anh trải qua nhiều mối tình rồi và anh lần đầu được vậy á. Anh siu siu bất ngờ luôn. Và siu siu tuổi thân vì anh không lo được cho em xứng. 
+
+Anh luôn thương em bằng những gì anh có. Em xứng đáng với những điều tốt đẹp nên anh sẽ luôn dành những gì tốt nhất trong khả năng của anh dành cho em. Em biết hong thật sự anh rất tủi thân vì đôi lúc em nói em thích này em muốn ăn cái kia anh lại không làm được nên suy nghĩ trong đầu anh là anh không xứng với em anh muốn em được nhiều điều tốt hơn nên anh mới không đúng khi nói lời buông, anh xin lỗi em, anh thật sự chỉ muốn em gặp điều xứng đáng hơn chứ không có gì hết á , anh không chịu nổi nỗi nhục khi thấy người tốt như em vậy lại thiệt thòi khi bên anh. 
+
+Anh biết cứ lần anh nói chia tay vậy bé sẽ rất tủi thân , bé rất buồn, anh thấu anh hiểu và anh sẽ thật vô trách nhiệm nếu không quen em được tới cùng. Anh không phải không trân trọng bé đâu , những nỗi đau khi em thiệt anh thật sự rất sót cho em á. Anh xin lỗi vì những lần như vậy. Anh hiểu khi quen ai cũng sẽ cãi nhau nghi ngờ nhau nhưng anh muốn cho em hết hoài nghi rằng anh thề trên cái tên của anh là anh thương em thật lòng anh muốn dành hết cho em, anh trân trọng em.
+
+Lí dó anh viết web này không phải gì mà là muốn em hơn người ta và có cái đặc biệt duy nhất cho riêng em , anh chưa tặng quà em kịp nên hi vọng web này sẽ là gì đó an ủi em trước để em biết rằng em không thiệt thòi và anh luôn cố gắng dành những gì có thể cho em nèee. Nhớ đọc lại bức thư này 3 lần cho nó thấm nhé em iu
+
+Anh đã hứa với ba mẹ là sẽ chăm sóc lo lắng cho em thật tốt và anh cũng đang cố gắng từng ngày để phát triển bản thân anh để có thể xứng với em , khiến cho người khác nhìn vào em thật may mắn khi có anh , đó là mục tiêu của anh. 
+
+Anh cũng thật sự cảm ơn khi mà em đã tin tưởng trao hết cho anh trong 1 thời gian ngắn điều đó chứng tỏ sự tin tưởng của em dành cho anh và đó cũng là 1 lời nhắc thầm lặng rằng anh phải có trách nhiệm với cuộc đời của em dù thế nào đi nữa.
+
+Hiện tại , anh chưa đủ tốt để lo cho em trọn vẹn nhưng anh sẽ làm mọi thứ trong khả năng của anh chỉ mong em cười , anh sẽ cố gắng không để em bị thiệt thòi gì hết á , hiện tại nó sẽ khó khăn cho anh và em nhưng anh tin rằng 1 ngày nào đó anh với em sẽ tốt đẹp hơn khiến cho em phải tự hào về anh hơn, vì anh cũng không muốn bản thân anh thua kém em đâu nhéee
+
+Cảm ơn em đã là chỗ dựa của anh sau những lần mệt mỏi những lúc buồn trong bất lực,...
+
+Để mà nói thì nói 1 tuần cũng chưa hết,... 
+
+Nên là thôi mình chừa lại khi nào có dịp kể tiếp nhé cho kịch tính nè babi,...
+
+Cảm ơn em ngàn lần Trần Kim Bảo Ngọc
+
+Anh yêu của em - Nguyễn Hữu Văn Trí.`;
 
       /* ══════════════════════════════════════════════
    § CURSOR
@@ -1625,19 +1690,75 @@ Yêu em rất nhiều.`;
 
       function go(n) {
         if (n === curAct) return;
-        document.getElementById("a" + curAct).classList.add("off");
-        setTimeout(
-          () =>
-            document.getElementById("a" + curAct).classList.remove("on", "off"),
-          1700,
-        );
+        const prevAct = curAct;
         curAct = n;
-        document.getElementById("a" + n).classList.add("on");
+
+        // STEP 1: Fade out scene cũ
+        const fromEl = document.getElementById("a" + prevAct);
+        fromEl.style.opacity = "0";
+        fromEl.style.pointerEvents = "none";
+        fromEl.classList.remove("on");
+        fromEl.classList.add("off");
+
+        const _prevAct = prevAct; // closure capture
+        setTimeout(() => {
+          fromEl.classList.remove("off");
+          fromEl.style.visibility = "hidden";
+        }, 1700);
+
+        // STEP 2: Chuẩn bị scene mới — FORCE ANIMATION RESTART
+        const toEl = document.getElementById("a" + n);
+
+        // TRICK: Clone tất cả animated children để browser restart animation
+        // Đây là cách duy nhất 100% đáng tin cậy để restart CSS animation
+        _hardResetAnimations(toEl);
+
+        // STEP 3: Hiện scene mới
+        toEl.style.visibility = "visible";
+        toEl.style.opacity = "0";
+        toEl.classList.remove("off");
+        toEl.classList.add("on");
+
+        // Force reflow để transition opacity hoạt động
+        void toEl.offsetWidth;
+        toEl.style.opacity = "1";
+
+        // Update nav dots
         document
           .querySelectorAll(".nd")
           .forEach((d) => d.classList.toggle("on", +d.dataset.a === n));
-        if (INITS[n]) setTimeout(INITS[n], 250);
+
+        // Init content
+        if (INITS[n]) setTimeout(INITS[n], 150);
       }
+
+      // HARD RESET: Clone element để force animation restart
+      // Technique: el.replaceWith(el.cloneNode(true)) resets all animation state
+      function _hardResetAnimations(containerEl) {
+        // Target chính xác các element có animation:rise trong Act 2
+        const sel = ".eyb, .tit, .fhw, .subl, .lbl, .hbl";
+        containerEl.querySelectorAll(sel).forEach((el) => {
+          // Void offsetWidth = force browser recalculate style = restart animation
+          el.style.animation = "none";
+          void el.offsetWidth; // REFLOW
+          el.style.animation = ""; // Restore từ CSS
+          void el.offsetWidth; // REFLOW again
+        });
+        // Special: button với inline animation style
+        containerEl
+          .querySelectorAll('button[style*="animation"]')
+          .forEach((el) => {
+            const origStyle = el.getAttribute("style");
+            el.setAttribute(
+              "style",
+              origStyle.replace(/animation:[^;]+;?/g, ""),
+            );
+            void el.offsetWidth;
+            el.setAttribute("style", origStyle);
+            void el.offsetWidth;
+          });
+      }
+
       document
         .querySelectorAll(".nd")
         .forEach((d) => d.addEventListener("click", () => go(+d.dataset.a)));
@@ -2731,6 +2852,8 @@ Yêu em rất nhiều.`;
       let fluidOn = false;
       function initA2() {
         spawnHearts(14);
+        // FIX: reset flag để fluid heart chạy lại khi quay lại scene
+        fluidOn = false;
         startFluid();
       }
 
@@ -2909,8 +3032,14 @@ Yêu em rất nhiều.`;
    § GALLERY (Orbit 3D + Scatter)
 ══════════════════════════════════════════════ */
       function initA3() {
+        // FIX: Reset orbit animation state khi re-enter
+        oAngle = 0;
+        oDelta = 0;
+        oDrag = false;
         buildOrbit();
         buildScatter();
+        // FIX: Ensure orbit mode on enter
+        setMode("orbit");
       }
 
       /* — ORBIT — */
@@ -3408,7 +3537,7 @@ Yêu em rất nhiều.`;
         ytOn = false;
       (function () {
         const s = document.createElement("script");
-        s.src = "https://youtu.be/_kN0xMo0iQU?si=eL0G78-J50o6ekEa";
+        s.src = "https://youtu.be/_kN0xMo0iQU?si=ZosRWQaJbfBpLRec&t";
         document.head.appendChild(s);
       })();
       window.onYouTubeIframeAPIReady = function () {
