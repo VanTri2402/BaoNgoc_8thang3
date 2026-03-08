@@ -231,7 +231,9 @@
         animation: rise 0.8s 0.2s ease forwards !important;
       }
       .sc.on .tit {
-        animation: shimmer 5s ease infinite, rise 0.9s 0.5s ease both !important;
+        animation:
+          shimmer 5s ease infinite,
+          rise 0.9s 0.5s ease both !important;
       }
       .sc.on .fhw {
         animation: rise 0.9s 0.9s ease both !important;
@@ -1120,7 +1122,11 @@
     </nav>
 
     <!-- ═══ ACT 1 — BIG BANG LOADER ═══ -->
-    <section id="a1" class="sc on" style="visibility:visible; opacity:1; padding:0; overflow:hidden">
+    <section
+      id="a1"
+      class="sc on"
+      style="visibility: visible; opacity: 1; padding: 0; overflow: hidden"
+    >
       <canvas
         id="a1cv"
         style="
@@ -1282,7 +1288,7 @@
             ><i class="ph ph-flower-lotus" style="font-size: 2.1rem"></i
           ></span>
           <span class="ldate">Ngày 08 tháng 03 — Anh gửi em</span>
-          <span class="lsalute">Bảo Ngọc yêu dấu,</span>
+          <span class="lsalute">Trần Kim Bảo Ngọc yêu dấu,</span>
           <div id="twout"><span class="twc" id="twcur"></span></div>
           <div class="lsig" id="lsig">
             <i
@@ -1689,38 +1695,39 @@ Anh yêu của em - Nguyễn Hữu Văn Trí.`;
         curAct = n;
 
         // STEP 1: Fade out scene cũ
-        const fromEl = document.getElementById('a' + prevAct);
-        fromEl.style.opacity = '0';
-        fromEl.style.pointerEvents = 'none';
-        fromEl.classList.remove('on');
-        fromEl.classList.add('off');
-        
+        const fromEl = document.getElementById("a" + prevAct);
+        fromEl.style.opacity = "0";
+        fromEl.style.pointerEvents = "none";
+        fromEl.classList.remove("on");
+        fromEl.classList.add("off");
+
         const _prevAct = prevAct; // closure capture
         setTimeout(() => {
-          fromEl.classList.remove('off');
-          fromEl.style.visibility = 'hidden';
+          fromEl.classList.remove("off");
+          fromEl.style.visibility = "hidden";
         }, 1700);
 
         // STEP 2: Chuẩn bị scene mới — FORCE ANIMATION RESTART
-        const toEl = document.getElementById('a' + n);
-        
+        const toEl = document.getElementById("a" + n);
+
         // TRICK: Clone tất cả animated children để browser restart animation
         // Đây là cách duy nhất 100% đáng tin cậy để restart CSS animation
         _hardResetAnimations(toEl);
-        
+
         // STEP 3: Hiện scene mới
-        toEl.style.visibility = 'visible';
-        toEl.style.opacity = '0';
-        toEl.classList.remove('off');
-        toEl.classList.add('on');
-        
+        toEl.style.visibility = "visible";
+        toEl.style.opacity = "0";
+        toEl.classList.remove("off");
+        toEl.classList.add("on");
+
         // Force reflow để transition opacity hoạt động
         void toEl.offsetWidth;
-        toEl.style.opacity = '1';
+        toEl.style.opacity = "1";
 
         // Update nav dots
-        document.querySelectorAll('.nd')
-          .forEach(d => d.classList.toggle('on', +d.dataset.a === n));
+        document
+          .querySelectorAll(".nd")
+          .forEach((d) => d.classList.toggle("on", +d.dataset.a === n));
 
         // Init content
         if (INITS[n]) setTimeout(INITS[n], 150);
@@ -1730,25 +1737,29 @@ Anh yêu của em - Nguyễn Hữu Văn Trí.`;
       // Technique: el.replaceWith(el.cloneNode(true)) resets all animation state
       function _hardResetAnimations(containerEl) {
         // Target chính xác các element có animation:rise trong Act 2
-        const sel = '.eyb, .tit, .fhw, .subl, .lbl, .hbl';
-        containerEl.querySelectorAll(sel).forEach(el => {
+        const sel = ".eyb, .tit, .fhw, .subl, .lbl, .hbl";
+        containerEl.querySelectorAll(sel).forEach((el) => {
           // Void offsetWidth = force browser recalculate style = restart animation
-          el.style.animation = 'none';
+          el.style.animation = "none";
           void el.offsetWidth; // REFLOW
-          el.style.animation = ''; // Restore từ CSS
+          el.style.animation = ""; // Restore từ CSS
           void el.offsetWidth; // REFLOW again
         });
         // Special: button với inline animation style
-        containerEl.querySelectorAll('button[style*="animation"]').forEach(el => {
-          const origStyle = el.getAttribute('style');
-          el.setAttribute('style', origStyle.replace(/animation:[^;]+;?/g, ''));
-          void el.offsetWidth;
-          el.setAttribute('style', origStyle);
-          void el.offsetWidth;
-        });
+        containerEl
+          .querySelectorAll('button[style*="animation"]')
+          .forEach((el) => {
+            const origStyle = el.getAttribute("style");
+            el.setAttribute(
+              "style",
+              origStyle.replace(/animation:[^;]+;?/g, ""),
+            );
+            void el.offsetWidth;
+            el.setAttribute("style", origStyle);
+            void el.offsetWidth;
+          });
       }
 
-      
       document
         .querySelectorAll(".nd")
         .forEach((d) => d.addEventListener("click", () => go(+d.dataset.a)));
@@ -3023,11 +3034,13 @@ Anh yêu của em - Nguyễn Hữu Văn Trí.`;
 ══════════════════════════════════════════════ */
       function initA3() {
         // FIX: Reset orbit animation state khi re-enter
-        oAngle = 0; oDelta = 0; oDrag = false;
+        oAngle = 0;
+        oDelta = 0;
+        oDrag = false;
         buildOrbit();
         buildScatter();
         // FIX: Ensure orbit mode on enter
-        setMode('orbit');
+        setMode("orbit");
       }
 
       /* — ORBIT — */
@@ -3525,7 +3538,7 @@ Anh yêu của em - Nguyễn Hữu Văn Trí.`;
         ytOn = false;
       (function () {
         const s = document.createElement("script");
-        s.src = "https://www.youtube.com/iframe_api";
+        s.src = "https://youtu.be/_kN0xMo0iQU?si=ZosRWQaJbfBpLRec&t=3";
         document.head.appendChild(s);
       })();
       window.onYouTubeIframeAPIReady = function () {
